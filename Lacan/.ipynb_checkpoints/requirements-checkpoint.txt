@@ -1,0 +1,6 @@
+transformers
+scipy
+torch
+openai
+pyarrow
+pandas
