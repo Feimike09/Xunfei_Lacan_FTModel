@@ -15,7 +15,7 @@ logging.basicConfig(filename='app1.log',level=logging.INFO, format='%(asctime)s 
 logger = logging.getLogger(__name__)
 
 # 初始化 OpenAI 客户端
-client = OpenAI(base_url="https://api.deepseek.com/v1", api_key="sk-ae284886694a4020aae65e61402db9e2")  # 替换为你的 API 密钥
+client = OpenAI(base_url="https://api.deepseek.com/v1", api_key="")  # 替换为你的 API 密钥
 
 def read_file(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -24,21 +24,23 @@ def read_file(file_path: str) -> str:
 @backoff.on_exception(backoff.expo, Exception, max_tries=3)
 def generate_single_entry(text: str) -> Dict:
     prompt = f"""
-    基于以下文本，生成1个用于指令数据集的高质量条目。条目应该直接关联到给定的文本内容，提出相关的问题或任务。
-    请确保生成多样化的指令类型，例如：
-    - 分析类："分析..."
-    - 比较类："比较..."
-    - 解释类："解释..."
-    - 评价类："评价..."
-    - 问答类："为什么..."
-
+    你现在是一个模型微调大师，请帮助我构建一个微调数据集，相关资料和要求在下方
+    - 基座模型：qwen7b 
+    - 让微调模型具有话语分析的能力
+    - 利用拉康的精神分析理论，对输入文本进行符号学和精神分析层面的解构，揭示潜意识中的“欲望”与“缺失”。
+    例如：
+    {
+      "instruction": "利用拉康的精神分析理论对以下句子进行符号学和精神分析层面的解构：‘我渴望成功。’",
+      "input": "我渴望成功。",
+      "output": "‘渴望’一词揭示了主体对成功的无尽追求，这不仅是对成就的欲望，也是对大他者认可的需求。"
+    }
     文本内容：
     {text}
 
     请以下面的格式生成条目，确保所有字段都有适当的内容：
     {{
-        "instruction": "使用上述多样化的指令类型之一，提出一个具体的、与文本相关的问题或任务",
-        "input": "如果需要额外的上下文信息，请在这里提供，否则留空",
+        "instruction": "请按照上述要求，提出一个具体的、与文本相关的问题或任务",
+        "input": "关于此段文字用户可能的输入",
         "output": "对instruction的详细回答或任务的完成结果"
     }}
     确保所有生成的内容都与给定的文本直接相关，生成的是有效的JSON格式，并且内容高质量、准确、详细。
@@ -115,11 +117,11 @@ def save_dataset_as_parquet(dataset: List[Dict], output_file: str):
     pq.write_table(table, output_file)
 
 if __name__ == "__main__":
-    input_folder = "./saveChunk1"  # 指定输入文件夹路径
-    output_file = "/root/Lacan/datasets/lacanyt.parquet"
+    input_folder = "../saveChunk"  # 指定输入文件夹路径
+    output_file = "../lacan.parquet"
 
     logger.info("开始生成数据集")
-    dataset = generate_dataset(input_folder, entries_per_file=10)
+    dataset = generate_dataset(input_folder, entries_per_file=2)
     save_dataset_as_parquet(dataset, output_file)
     logger.info(f"数据集已生成并保存到 {output_file}")
     logger.info(f"共生成 {len(dataset)} 个有效条目")

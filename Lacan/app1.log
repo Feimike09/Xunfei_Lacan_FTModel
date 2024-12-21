@@ -2232,3 +2232,8 @@
 2024-12-19 10:35:24,315 - INFO -   成功生成 1 个完整条目
 2024-12-19 10:35:27,146 - INFO - 数据集已生成并保存到 /root/datasets/lacanyt.parquet
 2024-12-19 10:35:27,146 - INFO - 共生成 230 个有效条目
+2024-12-21 10:25:38,167 - INFO - 开始生成数据集
+2024-12-21 10:25:38,168 - INFO - 正在处理文件: chunk_10.txt
+2024-12-21 10:25:38,221 - INFO -   生成第 1/2 个条目
+2024-12-21 10:25:38,221 - INFO - Backing off generate_single_entry(...) for 0.7s (ValueError: Invalid format specifier)
+2024-12-21 10:25:38,907 - INFO - Backing off generate_single_entry(...) for 0.8s (ValueError: Invalid format specifier)
